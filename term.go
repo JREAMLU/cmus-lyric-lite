@@ -49,7 +49,11 @@ func DrawEmpty() {
 func DrawList(rows []string, cline int) {
 	w, h := ui.TerminalDimensions()
 	l := widgets.NewList()
-	l.Title = rows[0]
+
+	if len(rows) > 0 {
+		l.Title = rows[0]
+	}
+
 	l.PaddingTop = 2
 	l.WrapText = false
 	l.TextStyle = ui.NewStyle(ui.ColorYellow)
@@ -58,6 +62,9 @@ func DrawList(rows []string, cline int) {
 	idx := 1
 	if cline+2 > h {
 		idx = cline - 1
+	}
+	if idx > len(rows)-1 {
+		idx = len(rows) - 1
 	}
 	l.Rows = rows[idx:]
 

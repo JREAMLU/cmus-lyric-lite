@@ -18,7 +18,8 @@ type Cmus struct {
 	CurFile  string
 	CurLyric map[int][]string
 	CurPos   int
-	Pkeys    []int
+	// position keys
+	Pkeys []int
 }
 
 // Song info
