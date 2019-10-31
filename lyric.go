@@ -6,4 +6,6 @@ func Listen(cmus *Cmus) {
 	if song.Position > 0 {
 		return
 	}
+
+	DrawEmpty()
 }
