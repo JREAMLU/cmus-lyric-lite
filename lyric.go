@@ -32,6 +32,53 @@ func Listen(cmus *Cmus) {
 			cmus.CurLyric = curLyric
 		}
 
+		if cmus.CurLyric == nil {
+			DrawEmpty()
+			return
+		}
+
+		var tmpPos int
+		for i, n := range cmus.Pkeys {
+			if song.Position < n {
+				tmpPos = cmus.Pkeys[i-1]
+				break
+			}
+		}
+		// the same line needn't move
+		if cmus.CurPos == tmpPos && cmus.CurPos != 0 {
+			return
+		}
+
+		cmus.CurPos = tmpPos
+
+		list := make([]string, 2*len(cmus.Pkeys))
+		idx, cline := 0, 0
+
+		for _, pos := range cmus.Pkeys {
+			data := cmus.CurLyric[pos]
+			datas := make([]string, len(data))
+			copy(datas, data)
+			if cmus.CurPos == pos && pos != 0 {
+				text := datas[0]
+				if len(text) < 1 {
+					text = "..."
+				}
+				datas[0] = "[" + text + "](fg:cyan)"
+				if len(datas[1]) > 0 {
+					datas[1] = "[" + datas[1] + "](fg:cyan)"
+				}
+				cline = idx
+
+			}
+			list[idx] = datas[0]
+			idx++
+			if len(datas[1]) > 0 {
+				list[idx] = datas[1]
+				idx++
+			}
+		}
+
+		DrawList(list, cline)
 		return
 	}
 

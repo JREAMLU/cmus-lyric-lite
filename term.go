@@ -60,8 +60,8 @@ func DrawList(rows []string, cline int) {
 	l.SetRect(0, 0, w, h)
 
 	idx := 1
-	if cline+2 > h {
-		idx = cline - 1
+	if cline > (h/2)-1 {
+		idx = cline - (h/2 - h/8)
 	}
 	if idx > len(rows)-1 {
 		idx = len(rows) - 1
