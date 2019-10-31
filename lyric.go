@@ -2,5 +2,8 @@ package main
 
 // Listen listen cmus info
 func Listen(cmus *Cmus) {
-	cmus.Remote()
+	song := cmus.Remote()
+	if song.Position > 0 {
+		return
+	}
 }
