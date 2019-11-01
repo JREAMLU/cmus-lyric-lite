@@ -7,6 +7,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/JREAMLU/cmus-ly/source"
 )
 
 // Listen listen cmus info
@@ -18,8 +20,10 @@ func Listen(cmus *Cmus) {
 			curLyric := loadLyrics(song.File)
 			if curLyric == nil {
 				log.Println("fetching..")
-				fetchLyric(song.File, song.Artist, song.Title, song.Duration)
-				curLyric = loadLyrics(song.File)
+				err := fetchLyric(song.File, song.Artist, song.Title, song.Duration, 0)
+				if err == nil {
+					curLyric = loadLyrics(song.File)
+				}
 			}
 
 			// pos keys
@@ -138,7 +142,14 @@ func buildLyricMap(lyric []string) map[int]string {
 	return m
 }
 
-// TODO:
-func fetchLyric(file string, artlist string, title string, duration int) {
+func fetchLyric(file string, artlist string, title string, duration int, size int) error {
+	var err error
+	for _, lyric := range source.LyricSrc {
+		err = lyric.FetchLyric(file, artlist, title, duration, size)
+		if err == nil {
+			return nil
+		}
+	}
 
+	return err
 }
