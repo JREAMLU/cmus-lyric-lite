@@ -1,8 +1,12 @@
 package source
 
 import (
+	"encoding/json"
 	"io"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"net/url"
 	"os"
 	"strings"
 )
@@ -10,6 +14,19 @@ import (
 // Ntes 163
 type Ntes struct {
 }
+
+const (
+	// LyricAPI get ly
+	LyricAPI = "http://music.163.com/weapi/song/lyric?csrf_token="
+	// SearchAPI search song
+	SearchAPI = "http://music.163.com/weapi/search/get?csrf_token="
+	// CommentAPI comment api
+	CommentAPI = "http://music.163.com/weapi/v1/resource/comments/R_SO_4_%v/?csrf_token="
+	// Cookie cookie
+	Cookie = "os=pc; osver=Microsoft-Windows-10-Professional-build-10586-64bit; appver=2.0.3.131777; channel=netease; __remember_me=true"
+	// UserAgent ua
+	UserAgent = "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"
+)
 
 func init() {
 	LyricSrc["ntes"] = NewNtes()
@@ -53,6 +70,45 @@ func (n *Ntes) FetchLyric(file string, artlist string, title string, duration in
 // FindSongID find song id
 // TODO:
 func (n *Ntes) FindSongID(name string, artlist string, title string, duration int, size int) int {
+	m := make(map[string]interface{})
+
+	m["s"] = name
+	m["type"] = 1
+	m["limit"] = 10
+	m["offset"] = 0
+	m["total"] = true
+	m["csrf_token"] = ""
+
+	req, _ := json.Marshal(m)
+	params, encSecKey, _ := EncParams(string(req))
+
+	resp, err := post(SearchAPI, params, encSecKey)
+	if err != nil {
+		return 0
+	}
+
+	ret := &Songs{}
+	err = json.Unmarshal(resp, ret)
+	if err != nil {
+		log.Println(err)
+		return 0
+	}
+	code := ret.Code
+
+	if 200 != code {
+		log.Printf("code: %v, msg: %v \n", code, ret.Result)
+		return 0
+	}
+
+	if len(ret.Result.Songs) > 0 {
+		for _, v := range ret.Result.Songs {
+			dt := v.Duration / 1000
+			if dt == duration {
+				return v.ID
+			}
+		}
+	}
+
 	return 0
 }
 
@@ -65,10 +121,6 @@ func (n *Ntes) DownloadLyric(id int) (string, string, error) {
 // NewNtes new
 func NewNtes() LyricSource {
 	return &Ntes{}
-}
-
-func getLyric(id int) (string, string) {
-	return "", ""
 }
 
 func save(path string, src io.Reader) error {
@@ -88,8 +140,41 @@ func save(path string, src io.Reader) error {
 	return err
 }
 
-// Song song
-type Song struct {
+func post(_url, params, encSecKey string) ([]byte, error) {
+	client := &http.Client{}
+	form := url.Values{}
+	form.Set("params", params)
+	form.Set("encSecKey", encSecKey)
+
+	request, err := http.NewRequest("POST", _url, strings.NewReader(form.Encode()))
+	if err != nil {
+		return nil, err
+	}
+
+	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	request.Header.Set("Host", "music.163.com")
+	request.Header.Set("Origin", "http://music.163.com")
+	request.Header.Set("User-Agent", UserAgent)
+
+	request.Header.Set("Cookie", Cookie)
+
+	resp, err := client.Do(request)
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+	resBody, resErr := ioutil.ReadAll(resp.Body)
+	if resErr != nil {
+		log.Println(err)
+		return nil, resErr
+	}
+	return resBody, nil
+}
+
+// Songs search songs
+type Songs struct {
 	Result struct {
 		Songs []struct {
 			ID      int    `json:"id"`
