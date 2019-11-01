@@ -68,7 +68,6 @@ func (n *Ntes) FetchLyric(file string, artlist string, title string, duration in
 }
 
 // FindSongID find song id
-// TODO:
 func (n *Ntes) FindSongID(name string, artlist string, title string, duration int, size int) int {
 	m := make(map[string]interface{})
 
