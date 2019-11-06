@@ -9,6 +9,8 @@ import (
 	"net/url"
 	"os"
 	"strings"
+
+	"github.com/JREAMLU/cmus-ly/encrypt"
 )
 
 // Ntes 163
@@ -79,7 +81,7 @@ func (n *Ntes) FindSongID(name string, artlist string, title string, duration in
 	m["csrf_token"] = ""
 
 	req, _ := json.Marshal(m)
-	params, encSecKey, _ := EncParams(string(req))
+	params, encSecKey, _ := encrypt.EncParams(string(req))
 
 	resp, err := post(SearchAPI, params, encSecKey)
 	if err != nil {
