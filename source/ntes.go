@@ -102,7 +102,6 @@ func (n *Ntes) FindSongID(name string, artlist string, title string, duration in
 }
 
 // DownloadLyric download ly
-// TODO:
 func (n *Ntes) DownloadLyric(id int, dir string, name string) error {
 	lyrc, tlyrc, err := n.GetLyric(id)
 	if err != nil {
