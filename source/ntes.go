@@ -44,25 +44,9 @@ func (n *Ntes) FetchLyric(file string, artlist string, title string, duration in
 	sid := n.FindSongID(name, "", "", duration, 0)
 
 	if sid > 0 {
-		lyrc, tlyrc, err := n.DownloadLyric(sid)
+		err := n.DownloadLyric(sid, dir, name)
 		if err != nil {
 			return err
-		}
-
-		if len(lyrc) > 0 {
-			path := dir + "/" + name + ".lyric"
-			err := save(path, strings.NewReader(lyrc))
-			if err != nil {
-				return err
-			}
-		}
-
-		if len(tlyrc) > 0 {
-			path := dir + "/" + name + ".t.lyric"
-			err := save(path, strings.NewReader(tlyrc))
-			if err != nil {
-				return err
-			}
 		}
 	}
 
@@ -81,7 +65,11 @@ func (n *Ntes) FindSongID(name string, artlist string, title string, duration in
 	m["csrf_token"] = ""
 
 	req, _ := json.Marshal(m)
-	params, encSecKey, _ := encrypt.EncParams(string(req))
+	params, encSecKey, err := encrypt.EncParams(string(req))
+	if err != nil {
+		log.Printf("error: %v \n", err)
+		return 0
+	}
 
 	resp, err := post(SearchAPI, params, encSecKey)
 	if err != nil {
@@ -115,8 +103,73 @@ func (n *Ntes) FindSongID(name string, artlist string, title string, duration in
 
 // DownloadLyric download ly
 // TODO:
-func (n *Ntes) DownloadLyric(id int) (string, string, error) {
-	return "", "", nil
+func (n *Ntes) DownloadLyric(id int, dir string, name string) error {
+	lyrc, tlyrc, err := n.GetLyric(id)
+	if err != nil {
+		return err
+	}
+
+	if len(lyrc) > 0 {
+		path := dir + "/" + name + ".lyric"
+		err := save(path, strings.NewReader(lyrc))
+		if err != nil {
+			return err
+		}
+	}
+
+	if len(tlyrc) > 0 {
+		path := dir + "/" + name + ".t.lyric"
+		err := save(path, strings.NewReader(tlyrc))
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// GetLyric get lyric
+func (n *Ntes) GetLyric(id int) (string, string, error) {
+	var lyrc, tlyrc string
+	m := make(map[string]interface{})
+
+	m["id"] = id
+	m["os"] = "pc"
+	m["lv"] = -1
+	m["kv"] = -1
+	m["tv"] = -1
+	m["os"] = "pc"
+	m["csrf_token"] = ""
+
+	req, _ := json.Marshal(m)
+	params, encSecKey, err := encrypt.EncParams(string(req))
+	if err != nil {
+		log.Printf("error: %v \n", err)
+		return "", "", err
+	}
+
+	resp, err := post(LyricAPI, params, encSecKey)
+	if err != nil {
+		log.Println(err)
+		return lyrc, tlyrc, err
+	}
+
+	result := &Lyric{}
+
+	err = json.Unmarshal(resp, result)
+
+	if err != nil {
+		log.Println(err)
+		return lyrc, tlyrc, err
+	}
+
+	if 200 != result.Code {
+		log.Printf("code: %v, result: %v \n", result.Code, result)
+		return lyrc, tlyrc, nil
+	}
+
+	lyrc, tlyrc = result.Lrc.Lyric, result.Tlyric.Lyric
+	return lyrc, tlyrc, nil
 }
 
 // NewNtes new
@@ -225,5 +278,25 @@ type Songs struct {
 		} `json:"songs"`
 		SongCount int `json:"songCount"`
 	} `json:"result"`
+	Code int `json:"code"`
+}
+
+// Lyric lyric
+type Lyric struct {
+	Sgc bool `json:"sgc"`
+	Sfy bool `json:"sfy"`
+	Qfy bool `json:"qfy"`
+	Lrc struct {
+		Version int    `json:"version"`
+		Lyric   string `json:"lyric"`
+	} `json:"lrc"`
+	Klyric struct {
+		Version int    `json:"version"`
+		Lyric   string `json:"lyric"`
+	} `json:"klyric"`
+	Tlyric struct {
+		Version int    `json:"version"`
+		Lyric   string `json:"lyric"`
+	} `json:"tlyric"`
 	Code int `json:"code"`
 }

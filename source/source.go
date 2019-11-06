@@ -4,7 +4,7 @@ package source
 type LyricSource interface {
 	FetchLyric(file string, artlist string, title string, duration int, size int) error
 	FindSongID(name string, artlist string, title string, duration int, size int) int
-	DownloadLyric(id int) (string, string, error)
+	DownloadLyric(id int, dir string, name string) error
 }
 
 // LyricSrc lyric source
