@@ -18,9 +18,6 @@ Fork of [cmus-lyric](https://github.com/rockagen/cmus-lyric)
 With tmux 
 ![](https://i.imgur.com/wL3tPZa.png)
 
-With comments
-![](https://i.imgur.com/UUUf9lZ.png)
-
 help
 ```bash
 usage:
