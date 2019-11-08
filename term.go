@@ -46,7 +46,7 @@ func Run() error {
 
 // DrawEmpty draw empty list
 func DrawEmpty() {
-	// DrawList([]string{"", "", "[no lyrics](fg:red)"}, 0)
+	DrawList([]string{"", "", "[no lyrics](fg:red)"}, 0)
 }
 
 // DrawList draw lyric
