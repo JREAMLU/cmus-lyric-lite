@@ -1,4 +1,4 @@
-# cmus-lyric-plus
+# cmus-lyric-lite
 
 [cmus](https://cmus.github.io/) lyrics viewer
 
