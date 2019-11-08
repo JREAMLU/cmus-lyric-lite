@@ -10,7 +10,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/JREAMLU/cmus-ly/encrypt"
+	"github.com/JREAMLU/cmus-lyric-plus/encrypt"
 )
 
 // Ntes 163

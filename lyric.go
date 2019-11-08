@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/JREAMLU/cmus-ly/source"
+	"github.com/JREAMLU/cmus-lyric-plus/source"
 )
 
 // Listen listen cmus info
