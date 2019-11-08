@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"time"
 
 	ui "github.com/gizak/termui/v3"
@@ -33,8 +34,11 @@ func Run() error {
 			switch e.ID {
 			case "q", "<C-c>":
 				return nil
+			case "y":
+				tick = time.NewTicker(duration)
 			case "?":
 				tick.Stop()
+				Help()
 			}
 		}
 	}
@@ -69,4 +73,30 @@ func DrawList(rows []string, cline int) {
 	l.Rows = rows[idx:]
 
 	ui.Render(l)
+}
+
+// DrawParagraph draw paragraph
+func DrawParagraph(title string, buf *bytes.Buffer) {
+	ui.Clear()
+	w, h := ui.TerminalDimensions()
+	p := widgets.NewParagraph()
+	p.Text = buf.String()
+	p.Title = title
+	p.BorderStyle.Fg = ui.ColorWhite
+	p.BorderStyle.Bg = ui.ColorBlue
+	p.PaddingTop = 2
+	p.SetRect(0, 0, w, h)
+	p.Border = false
+	ui.Render(p)
+}
+
+// Help help menu
+func Help() {
+	buf := bytes.Buffer{}
+	buf.WriteString("usage: \n\n")
+	buf.WriteString(" q or <C-c>: quit \n")
+	buf.WriteString(" m         : view comments \n")
+	buf.WriteString(" y         : view lyrics \n")
+	buf.WriteString(" ?         : help \n")
+	DrawParagraph("help", &buf)
 }
