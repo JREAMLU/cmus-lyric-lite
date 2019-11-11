@@ -8,3 +8,6 @@ script:
   - make build-all
 notification:
   email: false
+branches:
+  only:
+  - master
