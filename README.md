@@ -4,7 +4,7 @@
 
 # Fork of [cmus-lyric](https://github.com/rockagen/cmus-lyric)
 
-![](https://api.travis-ci.org/rockagen/cmus-lyric.svg?branch=master)
+[![Build Status](https://travis-ci.com/JREAMLU/cmus-lyric-lite.svg?branch=master)](https://travis-ci.com/JREAMLU/cmus-lyric-lite)
 
 # Like
 ![](https://i.imgur.com/WNxuUZ7.png)
