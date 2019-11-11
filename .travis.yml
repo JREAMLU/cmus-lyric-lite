@@ -1,0 +1,11 @@
+sudo: false
+language: go
+go:
+  - 1.13.x
+  - master
+env:
+  - GO111MODULE=on
+script:
+  - make build-all
+notification:
+  email: false
