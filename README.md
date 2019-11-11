@@ -2,8 +2,7 @@
 
 [cmus](https://cmus.github.io/) lyrics viewer
 
-# Update
-Fork of [cmus-lyric](https://github.com/rockagen/cmus-lyric)
+# Fork of [cmus-lyric](https://github.com/rockagen/cmus-lyric)
 
 ![](https://api.travis-ci.org/rockagen/cmus-lyric.svg?branch=master)
 
