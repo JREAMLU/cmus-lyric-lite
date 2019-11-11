@@ -5,11 +5,6 @@
 # Update
 Fork of [cmus-lyric](https://github.com/rockagen/cmus-lyric)
 
--   update termui to V3
--   update fetch from 163
--   remove comments view
--   add go mod
-
 ![](https://api.travis-ci.org/rockagen/cmus-lyric.svg?branch=master)
 
 # Like
