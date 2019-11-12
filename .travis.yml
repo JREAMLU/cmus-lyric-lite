@@ -11,7 +11,7 @@ notification:
 deploy:
   provider: releases
   api_key: 
-    secure: ac37caf518651f15528e67dd195f6f69dd4c5d48
+    secure: b0af603ddb5f206f0a6dde92652158a27afdec16
   file:
     -  app/lyrics
     -  app/lyrics_osx
