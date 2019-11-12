@@ -9,9 +9,6 @@ script:
   - make build-all
 notification:
   email: false
-branches:
-  only:
-  - master
 deploy:
   provider: releases
   api_key: 
