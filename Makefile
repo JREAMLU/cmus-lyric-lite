@@ -1,5 +1,5 @@
 GO_CMD ?=go
-BIN_NAME := lyrics
+BIN_NAME := app/lyrics
 
 build:
 	${GO_CMD} build -o ${BIN_NAME} -v */go
