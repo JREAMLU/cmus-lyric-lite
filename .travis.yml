@@ -2,7 +2,6 @@ sudo: false
 language: go
 go:
   - 1.13.x
-  - master
 env:
   - GO111MODULE=on
 script:
@@ -12,7 +11,7 @@ notification:
 deploy:
   provider: releases
   api_key: 
-    secure: 15d24c7efe19342581a5f3eb7d6949f64772ff67
+    secure: 32387a2496c2b27093b9f273017c2b3029877aa5
   file:
     -  app/lyrics
     -  app/lyrics_osx
