@@ -8,14 +8,6 @@ script:
   - make build-all
 notification:
   email: false
-deploy:
-  provider: releases
-  api_key: 
-    secure: b0af603ddb5f206f0a6dde92652158a27afdec16
-  file:
-    -  app/lyrics
-    -  app/lyrics_osx
-  skip_cleanup: true
-  on:
-    tags: true
-
+branches:
+  only:
+  - master
